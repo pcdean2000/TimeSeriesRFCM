@@ -46,7 +46,7 @@ class RFCM(skb.ClassifierMixin, skb.BaseEstimator):
 
     def calc_dtw(self, data, center):
         dist = []
-        pool = Pool(processes=self.n_jobs)
+        # pool = Pool(processes=self.n_jobs)
         for center_node in center:
             # dist_center_node = []
             # for line in data:
@@ -56,7 +56,8 @@ class RFCM(skb.ClassifierMixin, skb.BaseEstimator):
             #         cost /= len(line[index]) + len(center_node[index])
             #         dist_feature.append(cost)
             #     dist_center_node.append(np.linalg.norm(np.array(dist_feature)))
-            dist_center_node = pool.starmap(self.do_one_calc_dtw, [(line, center_node) for line in data])
+            with Pool(processes=self.n_jobs) as pool:
+                dist_center_node = pool.starmap(self.do_one_calc_dtw, [(line, center_node) for line in data])
             dist.append(dist_center_node)
         return np.array(dist)
     
